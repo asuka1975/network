@@ -16,7 +16,7 @@ void neuron::receive(float value, input_type type) {
 }
 
 void neuron::send(float value) {
-    float v = output;
+    float v = output + bias;
     output = 0;
     for(auto wr : receivers) {
         if(auto r = wr.lock()) {
