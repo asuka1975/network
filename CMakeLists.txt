@@ -3,7 +3,7 @@ project(network)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(NETWORK_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/network/include)
+set(NETWORK_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 
 enable_testing()
 
