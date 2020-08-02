@@ -13,6 +13,7 @@ bool is_acyclic(std::uint32_t node_count, const std::vector<std::pair<std::uint3
     while(!source.empty()) {
 
     }
+    return false;
 }
 
 void find_source(std::uint32_t node_count,
