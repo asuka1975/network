@@ -23,7 +23,35 @@ namespace {
     }
 
     TEST(ALGORITHM_TEST, FIND_SOURCE) {
+        using connection_rule_t = std::vector<std::pair<std::uint32_t, std::uint32_t>>;
+        connection_rule_t rule1 {
+            std::make_pair(0, 1),
+            std::make_pair(0, 2),
+            std::make_pair(2, 4),
+            std::make_pair(2, 1)
+        };
+        std::set<std::uint32_t> source1;
+        find_source(5, rule1, source1);
+        EXPECT_EQ(source1, (std::set<std::uint32_t>{ 0, 3 }));
 
+        connection_rule_t rule2 {
+                std::make_pair(0, 3),
+                std::make_pair(2, 4),
+                std::make_pair(2, 1)
+        };
+        std::set<std::uint32_t> source2;
+        find_source(5, rule2, source2);
+        EXPECT_EQ(source2, (std::set<std::uint32_t>{ 0, 2 }));
+
+        connection_rule_t rule3 {
+                std::make_pair(0, 1),
+                std::make_pair(0, 3),
+                std::make_pair(2, 4),
+                std::make_pair(2, 1)
+        };
+        std::set<std::uint32_t> source3;
+        find_source(5, rule3, source3);
+        EXPECT_EQ(source3, (std::set<std::uint32_t>{ 0, 2 }));
     }
 }
 
