@@ -53,6 +53,56 @@ namespace {
         find_source(5, rule3, source3);
         EXPECT_EQ(source3, (std::set<std::uint32_t>{ 0, 2 }));
     }
+
+    TEST(ALGORITHM_TEST, IS_ACYCLIC) {
+        using connection_rule_t = std::vector<std::pair<std::uint32_t, std::uint32_t>>;
+
+        connection_rule_t  rule1 {
+            std::make_pair(0, 2),
+            std::make_pair(2, 1),
+            std::make_pair(1, 0)
+        };
+        EXPECT_TRUE(!is_acyclic(3, rule1));
+
+        connection_rule_t rule2 {
+            std::make_pair(0, 1),
+            std::make_pair(1, 0)
+        };
+
+        EXPECT_TRUE(!is_acyclic(2, rule2));
+        EXPECT_TRUE(!is_acyclic(3, rule2));
+
+        connection_rule_t rule3 {
+            std::make_pair(0, 1),
+            std::make_pair(0, 2)
+        };
+        EXPECT_TRUE(is_acyclic(3, rule3));
+
+        connection_rule_t rule4 {
+            std::make_pair(0, 1),
+            std::make_pair(1, 2),
+            std::make_pair(0, 2)
+        };
+        EXPECT_TRUE(is_acyclic(3, rule4));
+
+        connection_rule_t rule5 {
+            std::make_pair(0, 1),
+            std::make_pair(1, 2),
+            std::make_pair(0, 2),
+            std::make_pair(0, 3)
+        };
+        EXPECT_TRUE(is_acyclic(4, rule5));
+
+        connection_rule_t rule6 {
+                std::make_pair(0, 1),
+                std::make_pair(1, 2),
+                std::make_pair(0, 2),
+                std::make_pair(0, 3),
+                std::make_pair(3, 4),
+                std::make_pair(4, 0)
+        };
+        EXPECT_TRUE(is_acyclic(5, rule6));
+    }
 }
 
 int main(int argc, char **argv) {
