@@ -101,7 +101,7 @@ namespace {
                 std::make_pair(3, 4),
                 std::make_pair(4, 0)
         };
-        EXPECT_TRUE(is_acyclic(5, rule6));
+        EXPECT_TRUE(!is_acyclic(5, rule6));
     }
 }
 
