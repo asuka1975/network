@@ -2,9 +2,11 @@
 // Created by hungr on 2020/08/03.
 //
 
+#include <numeric>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "graph_algorithm.h"
+#include "feedforward.h"
 
 bool operator==(const std::set<std::uint32_t>& s1, const std::set<std::uint32_t>& s2) {
     auto iter1 = s1.begin(), iter2 = s2.begin();
@@ -102,6 +104,52 @@ namespace {
                 std::make_pair(4, 0)
         };
         EXPECT_TRUE(!is_acyclic(5, rule6));
+    }
+
+    TEST(CLASS_TEST, FEEDFORWARD) {
+        auto add = [](const std::vector<float>& v) { return v[0] + v[1]; };
+        auto sub = [](const std::vector<float>& v) { return v[0] - v[1]; };
+        auto mul = [](const std::vector<float>& v) { return v[0] * v[1]; };
+        auto div = [](const std::vector<float>& v) { return v[1] != 0 ? (v[0] / v[1]) : 0; };
+        feedforward_config config1 {
+            3, 2,
+            std::make_pair(0, 0),
+            std::vector<std::function<float(const std::vector<float>& args)>> { add, sub, mul, div },
+            std::vector<std::uint32_t> {},
+            std::vector<std::uint32_t> {},
+            std::vector<std::uint32_t> { 0, 1 }
+        };
+
+        feedforward n1(config1);
+        n1.input(std::vector<float> { 1.0f, 1.2f, 3.2f });
+        auto o1 = n1.get_outputs();
+        EXPECT_FLOAT_EQ(o1[0], 1.0f);
+        EXPECT_FLOAT_EQ(o1[1], 1.2f);
+
+        n1.input(std::vector<float> { 2.0f, 3.2f, 1.0f});
+        auto o2 = n1.get_outputs();
+        EXPECT_FLOAT_EQ(o2[0], 2.0f);
+        EXPECT_FLOAT_EQ(o2[1], 3.2f);
+
+        feedforward_config config2 {
+                3, 2,
+                std::make_pair(1, 1),
+                std::vector<std::function<float(const std::vector<float>& args)>> { add, sub, mul, div },
+                std::vector<std::uint32_t> { 1 },
+                std::vector<std::uint32_t> { 0, 1 },
+                std::vector<std::uint32_t> { 3, 2 },
+        };
+
+        feedforward n2(config2);
+        n2.input(std::vector<float> { 1.0f, 2.0f, 3.0f });
+        auto o3 = n2.get_outputs();
+        EXPECT_FLOAT_EQ(o3[0], -1.0f);
+        EXPECT_FLOAT_EQ(o3[1], 3.0f);
+
+        n2.input(std::vector<float> { 2.0f, 1.0f, 3.2f });
+        auto o4 = n2.get_outputs();
+        EXPECT_FLOAT_EQ(o4[0], 1.0f);
+        EXPECT_FLOAT_EQ(o4[1], 3.2f);
     }
 }
 
