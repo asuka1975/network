@@ -150,6 +150,71 @@ namespace {
         auto o4 = n2.get_outputs();
         EXPECT_FLOAT_EQ(o4[0], 1.0f);
         EXPECT_FLOAT_EQ(o4[1], 3.2f);
+
+        feedforward_config config3 {
+                3, 2,
+                std::make_pair(1, 2),
+                std::vector<std::function<float(const std::vector<float>& args)>> { add, sub, mul, div },
+                std::vector<std::uint32_t> { 1, 2 },
+                std::vector<std::uint32_t> { 0, 1, 1, 2 },
+                std::vector<std::uint32_t> { 4, 3 },
+        };
+        feedforward n3(config3);
+
+        n3.input(std::vector<float> { 1.0f, 2.0f, 3.0f });
+        auto o5 = n3.get_outputs();
+        EXPECT_FLOAT_EQ(o5[0], 6.0f);
+        EXPECT_FLOAT_EQ(o5[1], -1.0f);
+
+        n3.input(std::vector<float> { 2.2f, 1.0f, 3.2f });
+        auto o6 = n3.get_outputs();
+        EXPECT_FLOAT_EQ(o6[0], 3.2f);
+        EXPECT_FLOAT_EQ(o6[1], 1.2f);
+
+        feedforward_config config4 {
+                3, 2,
+                std::make_pair(2, 1),
+                std::vector<std::function<float(const std::vector<float>& args)>> { add, sub, mul, div },
+                std::vector<std::uint32_t> { 1, 2 },
+                std::vector<std::uint32_t> { 0, 1, 3, 2 },
+                std::vector<std::uint32_t> { 4, 2 },
+        };
+        feedforward n4(config4);
+
+        n4.input(std::vector<float> { 2.2f, 1.0f, 3.2f });
+        auto o7 = n4.get_outputs();
+        EXPECT_FLOAT_EQ(o7[0], 3.84f);
+        EXPECT_FLOAT_EQ(o7[1], 3.2f);
+
+        feedforward_config config5 {
+                3, 2,
+                std::make_pair(2, 2),
+                std::vector<std::function<float(const std::vector<float>& args)>> { add, sub, mul, div },
+                std::vector<std::uint32_t> { 1, 2, 3, 0 },
+                std::vector<std::uint32_t> { 0, 2, 0, 1, 3, 4, 4, 2 },
+                std::vector<std::uint32_t> { 0, 6 },
+        };
+        feedforward n5(config5);
+
+        n5.input(std::vector<float> { 2.2f, 1.0f, 3.2f });
+        auto o8 = n5.get_outputs();
+        EXPECT_FLOAT_EQ(o8[0], 2.2);
+        EXPECT_FLOAT_EQ(o8[1], 5.4);
+
+        feedforward_config config6 {
+                3, 2,
+                std::make_pair(2, 2),
+                std::vector<std::function<float(const std::vector<float>& args)>> { add, sub, mul, div },
+                std::vector<std::uint32_t> { 1, 2, 3, 0 },
+                std::vector<std::uint32_t> { 0, 2, 0, 1, 3, 4, 4, 2 },
+                std::vector<std::uint32_t> { 5, 6 },
+        };
+        feedforward n6(config6);
+
+        n6.input(std::vector<float> { 2.2f, 1.0f, 3.2f });
+        auto o9 = n6.get_outputs();
+        EXPECT_FLOAT_EQ(o9[0], -1.0f / 2.2f);
+        EXPECT_FLOAT_EQ(o9[1], 5.4f);
     }
 }
 

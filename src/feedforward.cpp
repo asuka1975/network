@@ -18,7 +18,7 @@ void feedforward::input(const std::vector<float> &inputs) {
         for(auto j = 0; j < arg_num; j++) {
             args[j] = node_outputs[config.conn[i * arg_num + j]];
         }
-        node_outputs[i + inputs.size()] = config.f[i](args);
+        node_outputs[i + inputs.size()] = config.f[config.node[i]](args);
     };
     auto j = 0;
     for(auto i : config.output) {
