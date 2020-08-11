@@ -12,7 +12,7 @@ feedforward::feedforward(const feedforward_config &config)
 
 void feedforward::input(const std::vector<float> &inputs) {
     std::copy(inputs.begin(), inputs.end(), node_outputs.begin());
-    auto arg_num = config.node.size() ? config.conn.size() / config.node.size() : 0;
+    auto arg_num = !config.node.empty() ? config.conn.size() / config.node.size() : 0;
     std::vector<float> args(arg_num);
     for(auto i = 0; i < config.node.size(); i++) {
         for(auto j = 0; j < arg_num; j++) {
