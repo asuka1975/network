@@ -2,7 +2,6 @@
 // Created by hungr on 2020/08/03.
 //
 
-#include <numeric>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "graph_algorithm.h"
