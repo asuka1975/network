@@ -24,6 +24,7 @@ struct network_config {
 
 class network {
 public:
+    network() = default;
     network(const network_config& config);
     void input(const std::vector<float>& inputs);
     std::vector<float> get_outputs() const;
