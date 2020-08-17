@@ -7,24 +7,23 @@
 
 #include <functional>
 #include <vector>
+#include "network.h"
 
 struct feedforward_config {
     std::uint32_t input_num;
     std::uint32_t output_num;
     std::vector<std::function<float(float)>> f;
-    std::vector<std::uint32_t> node;
-    std::vector<float> bias;
+    std::vector<std::tuple<std::uint32_t, float>> node;
     std::vector<std::tuple<std::uint32_t, std::uint32_t, float>> conn;
-    std::vector<std::uint32_t> output;
 };
 
-class feedforward {
+class feedforward : public network {
 public:
-    explicit feedforward(const feedforward_config& config);
-    void input(const std::vector<float>& inputs);
-    [[nodiscard]] const std::vector<float>& get_outputs() const;
+    explicit feedforward(const network_config& config);
+    void input(const std::vector<float>& inputs) override;
+    [[nodiscard]] const std::vector<float>& get_outputs() const override;
 private:
-    feedforward_config config;
+    network_config config;
     std::vector<float> outputs;
     std::vector<float> node_outputs;
 };

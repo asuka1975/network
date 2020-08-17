@@ -6,7 +6,7 @@
 #include "neuron.h"
 #include "synapse.h"
 
-network::network(const network_config &config) {
+deprecated::network::network(const network_config &config) {
     for(auto i = 0; i < config.node_count; i++) {
         neurons.push_back(std::make_shared<neuron>(config.bias[i], config.activations[i]));
     }
@@ -20,7 +20,7 @@ network::network(const network_config &config) {
     }
 }
 
-void network::input(const std::vector<float> &inputs) {
+void deprecated::network::input(const std::vector<float> &inputs) {
     for(auto i = 0; i < inputs.size(); i++) {
         neurons[i]->receive(inputs[i], NEURON);
     }
@@ -32,7 +32,7 @@ void network::input(const std::vector<float> &inputs) {
     }
 }
 
-std::vector<float> network::get_outputs() const {
+std::vector<float> deprecated::network::get_outputs() const {
     std::vector<float> v;
     for(const auto& o : outputs) {
         v.push_back(o->get_value());
