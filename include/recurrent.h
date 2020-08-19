@@ -12,6 +12,7 @@ public:
     explicit recurrent(const network_config& config);
     void input(const std::vector<float>& inputs) override;
     [[nodiscard]] const std::vector<float>& get_outputs() const override;
+    std::size_t size() const noexcept override;
 private:
     network_config config;
     std::vector<float> outputs;

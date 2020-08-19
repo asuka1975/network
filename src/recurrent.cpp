@@ -28,3 +28,7 @@ void recurrent::input(const std::vector<float> &inputs) {
 const std::vector<float> &recurrent::get_outputs() const {
     return outputs;
 }
+
+std::size_t recurrent::size() const noexcept {
+    return config.conn.size();
+}
