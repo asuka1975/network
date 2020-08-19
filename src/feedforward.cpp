@@ -29,3 +29,7 @@ void feedforward::input(const std::vector<float> &inputs) {
 const std::vector<float> &feedforward::get_outputs() const {
     return outputs;
 }
+
+std::size_t feedforward::size() const noexcept {
+    return config.conn.size();
+}

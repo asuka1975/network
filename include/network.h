@@ -52,6 +52,7 @@ class network {
 public:
     virtual void input(const std::vector<float>& inputs) = 0;
     [[nodiscard]] virtual const std::vector<float>& get_outputs() const = 0;
+    virtual std::size_t size() const noexcept = 0;
     virtual ~network() = default;
 };
 #endif //NETWORK_NETWORK_H
