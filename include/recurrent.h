@@ -8,6 +8,7 @@
 #include "network.h"
 
 class recurrent : public network {
+public:
     explicit recurrent(const network_config& config);
     void input(const std::vector<float>& inputs) override;
     [[nodiscard]] const std::vector<float>& get_outputs() const override;
