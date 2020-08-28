@@ -19,6 +19,7 @@ struct feedforward_config {
 
 class feedforward : public network {
 public:
+    using feedforwardable = void;
     explicit feedforward(const network_config& config);
     void input(const std::vector<float>& inputs) override;
     [[nodiscard]] const std::vector<float>& get_outputs() const override;
