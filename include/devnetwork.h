@@ -22,6 +22,10 @@ public:
     std::function<bool(neuron_t, neuron_t, position_t, float)> deleter;
 private:
     network_config config;
+    std::vector<float> output;
+    std::vector<float> node_output;
+    std::vector<neuron_t> nodes;
+    std::vector<std::tuple<position_t, float, std::uint32_t, std::uint32_t>> conns;
 };
 
 #endif //NETWORK_DEVNETWORK_H
