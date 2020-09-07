@@ -220,7 +220,7 @@ namespace {
     TEST(CLASS_TEST, DEVNETWORK) {
         network_config config;
         config.input_num = 2;
-        config.output_num = 0;
+        config.output_num = 1;
         config.node = std::vector<std::tuple<std::uint32_t, float>> {
             std::make_tuple(0u, 0.5f),
             std::make_tuple(0u, 0.5f),
@@ -239,7 +239,10 @@ namespace {
             std::make_tuple(1u, 4u, 0.5f),
         };
         devnetwork n(config);
-
+        for(auto i = 0; i < 100; i++) {
+            n.input(std::vector<float> { 1.0f, 1.0f });
+            std::cout << n.get_outputs()[0] << std::endl;
+        }
     }
 }
 
