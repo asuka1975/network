@@ -6,6 +6,7 @@
 #include <gmock/gmock.h>
 #include "graph_algorithm.h"
 #include "cgp_feedforward.h"
+#include "devnetwork.h"
 
 bool operator==(const std::set<std::uint32_t>& s1, const std::set<std::uint32_t>& s2) {
     auto iter1 = s1.begin(), iter2 = s2.begin();
@@ -214,6 +215,31 @@ namespace {
         auto o9 = n6.get_outputs();
         EXPECT_FLOAT_EQ(o9[0], -1.0f / 2.2f);
         EXPECT_FLOAT_EQ(o9[1], 5.4f);
+    }
+
+    TEST(CLASS_TEST, DEVNETWORK) {
+        network_config config;
+        config.input_num = 2;
+        config.output_num = 0;
+        config.node = std::vector<std::tuple<std::uint32_t, float>> {
+            std::make_tuple(0u, 0.5f),
+            std::make_tuple(0u, 0.5f),
+            std::make_tuple(0u, 0.5f),
+            std::make_tuple(0u, 0.5f),
+            std::make_tuple(0u, 0.5f),
+            std::make_tuple(0u, 0.5f),
+        };
+        config.conn = std::vector<std::tuple<std::uint32_t, std::uint32_t, float>> {
+            std::make_tuple(0u, 1u, 0.5f),
+            std::make_tuple(1u, 2u, 0.5f),
+            std::make_tuple(2u, 3u, 0.5f),
+            std::make_tuple(3u, 4u, 0.5f),
+            std::make_tuple(4u, 5u, 0.5f),
+            std::make_tuple(4u, 2u, 0.5f),
+            std::make_tuple(1u, 4u, 0.5f),
+        };
+        devnetwork n(config);
+
     }
 }
 
