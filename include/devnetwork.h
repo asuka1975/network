@@ -14,18 +14,21 @@ public:
     [[nodiscard]] const std::vector<float>& get_outputs() const;
     std::size_t size() const noexcept;
     using position_t = std::tuple<float, float>;
-    using neuron_t = std::tuple<position_t, float, float>;
+    using neuron_t = std::tuple<position_t, float, float>; // position, bias, energy
     using synapse_t = std::tuple<position_t, float>;
     using neuron_ret_t = std::tuple<bool, position_t, float>;
     using synapse_ret_t = std::tuple<bool, position_t, float>;
     std::function<std::pair<neuron_ret_t, synapse_ret_t>(const std::vector<neuron_t>&, synapse_t)> creator;
     std::function<bool(neuron_t, neuron_t, position_t, float)> deleter;
+    std::tuple<float, float, float, float, float> hebb;//k(A*oi*oj + B*oi + C*oj + D)
+    int neighbors_num;
 private:
+    void develop();
     network_config config;
     std::vector<float> output;
     std::vector<float> node_output;
     std::vector<neuron_t> nodes;
-    std::vector<std::tuple<position_t, float, std::uint32_t, std::uint32_t>> conns;
+    std::vector<std::tuple<position_t, float, std::uint32_t, std::uint32_t>> conns; // position, weight, in, out
 };
 
 #endif //NETWORK_DEVNETWORK_H
