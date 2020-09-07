@@ -6,7 +6,7 @@
 #include <random>
 
 devnetwork::devnetwork(const network_config &config) :
-    output(config.output_num), node_output(config.node.size()), nodes(config.node.size()), conns(config.conn.size()) {
+    output(config.output_num), node_output(config.node.size()), nodes(config.node.size()), conns(config.conn.size()), config(config) {
     std::random_device rnd;
     std::mt19937 mt(rnd());
     std::normal_distribution<float> dist(0.0f, 1.0f);// for initialization of position(TODO consider position initialization)
@@ -54,6 +54,8 @@ void devnetwork::input(const std::vector<float> &inputs) {
         x += tmp[i];
         std::get<2>(nodes[i]) = 1.0f / (1.0f + std::exp(-a * x));
     }
+    node_output = tmp;
+    std::copy(node_output.begin() + config.input_num, node_output.begin() + config.input_num + config.output_num, output.begin());
     develop();
 }
 
@@ -66,6 +68,7 @@ std::size_t devnetwork::size() const noexcept {
 }
 
 void devnetwork::develop() {
+    auto c = 0;
     for(auto i = 0; i < nodes.size(); i++) {
         std::vector<std::ptrdiff_t> idxes(nodes.size());
         std::iota(idxes.begin(), idxes.end(), 0);
@@ -109,6 +112,7 @@ void devnetwork::develop() {
         }
         if(std::get<0>(nc)) {
             nodes.emplace_back(std::get<1>(nc), std::get<2>(nc), 0.5f);
+            c++;
         }
         if(std::get<0>(sc)) {
             auto iter = std::min_element(nodes.begin(), nodes.end(), [&sc=sc] (auto n1, auto n2) -> bool {
@@ -123,4 +127,5 @@ void devnetwork::develop() {
             conns.emplace_back(std::get<1>(sc), std::get<2>(sc), nodes.size() - 1, iter - nodes.begin());
         }
     }
+    node_output.resize(node_output.size() + c);
 }
