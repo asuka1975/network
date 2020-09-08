@@ -13,4 +13,6 @@ add_library(network include/network.h include/circuitable.h include/output.h inc
         src/cgp_feedforward.cpp src/feedforward.cpp src/recurrent.cpp src/devnetwork.cpp)
 target_include_directories(network PUBLIC include)
 
-add_subdirectory(network_test)
+if(NOT TARGET network_test)
+    add_subdirectory(network_test)
+endif()
