@@ -124,7 +124,9 @@ void devnetwork::develop() {
                 float y2 = std::get<1>(std::get<0>(n2));
                 return (x1 - xs) * (x1 - xs) + (y1 - ys) * (y1 - ys) < (x2 - xs) * (x2 - xs) + (y2 - ys) * (y2 - ys);
             });
-            conns.emplace_back(std::get<1>(sc), std::get<2>(sc), nodes.size() - 1, iter - nodes.begin());
+            std::uint32_t in = i, out = iter - nodes.begin();
+            if(std::find_if(conns.begin(), conns.end(), [in, out](auto&& x) { return std::get<2>(x) == in && std::get<3>(x) == out; }) == conns.end())
+                conns.emplace_back(std::get<1>(sc), std::get<2>(sc), i, iter - nodes.begin());
         }
     }
     node_output.resize(node_output.size() + c);
