@@ -76,6 +76,8 @@ void devnetwork::develop() {
         }
     }
 
+    std::vector<neuron_t> creates_n;
+    std::vector<std::tuple<position_t, float, std::uint32_t, std::uint32_t>> creates_s;
     for(auto i = 0; i < nodes.size(); i++) {
         std::vector<std::ptrdiff_t> idxes(nodes.size());
         std::iota(idxes.begin(), idxes.end(), 0);
@@ -112,7 +114,7 @@ void devnetwork::develop() {
         auto [nc, sc] = creator(n, s);
 
         if(std::get<0>(nc)) {
-            nodes.emplace_back(std::get<1>(nc), std::get<2>(nc), 0.5f);
+            creates_n.emplace_back(std::get<1>(nc), std::get<2>(nc), 0.5f);
             c++;
         }
         if(std::get<0>(sc)) {
@@ -127,12 +129,14 @@ void devnetwork::develop() {
             });
             std::uint32_t in = i, out = iter - nodes.begin();
             if(std::find_if(conns.begin(), conns.end(), [in, out](auto&& x) { return std::get<2>(x) == in && std::get<3>(x) == out; }) == conns.end())
-                conns.emplace_back(std::get<1>(sc), std::get<2>(sc), i, iter - nodes.begin());
+                creates_s.emplace_back(std::get<1>(sc), std::get<2>(sc), i, iter - nodes.begin());
         }
     }
     for(int i = erases.size() - 1; i >= 0; i--) {
         conns.erase(conns.begin() + erases[i]);
     }
+    std::copy(creates_n.begin(), creates_n.end(), std::back_inserter(nodes));
+    std::copy(creates_s.begin(), creates_s.end(), std::back_inserter(conns));
 
     node_output.resize(node_output.size() + c);
 }
