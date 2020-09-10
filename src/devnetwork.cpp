@@ -69,6 +69,13 @@ std::size_t devnetwork::size() const noexcept {
 
 void devnetwork::develop() {
     auto c = 0;
+    std::vector<std::ptrdiff_t> erases;
+    for(auto i = 0; i < conns.size(); i++) {
+        if(deleter(nodes[std::get<2>(conns[i])], nodes[std::get<3>(conns[i])], std::get<0>(conns[i]), std::get<1>(conns[i]))) {
+            erases.push_back(i);
+        }
+    }
+
     for(auto i = 0; i < nodes.size(); i++) {
         std::vector<std::ptrdiff_t> idxes(nodes.size());
         std::iota(idxes.begin(), idxes.end(), 0);
@@ -104,12 +111,6 @@ void devnetwork::develop() {
         }
         auto [nc, sc] = creator(n, s);
 
-        for(auto i = 0; i < conns.size(); i++) {
-            if(deleter(nodes[std::get<2>(conns[i])], nodes[std::get<3>(conns[i])], std::get<0>(conns[i]), std::get<1>(conns[i]))) {
-                conns.erase(conns.begin() + i);
-                i--;
-            }
-        }
         if(std::get<0>(nc)) {
             nodes.emplace_back(std::get<1>(nc), std::get<2>(nc), 0.5f);
             c++;
@@ -129,5 +130,9 @@ void devnetwork::develop() {
                 conns.emplace_back(std::get<1>(sc), std::get<2>(sc), i, iter - nodes.begin());
         }
     }
+    for(int i = erases.size() - 1; i >= 0; i--) {
+        conns.erase(conns.begin() + erases[i]);
+    }
+
     node_output.resize(node_output.size() + c);
 }
