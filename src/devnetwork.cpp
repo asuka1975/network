@@ -140,3 +140,7 @@ void devnetwork::develop() {
 
     node_output.resize(node_output.size() + c);
 }
+
+std::size_t devnetwork::node_num() const noexcept {
+    return nodes.size();
+}
