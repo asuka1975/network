@@ -13,6 +13,7 @@ public:
     void input(const std::vector<float>& inputs);
     [[nodiscard]] const std::vector<float>& get_outputs() const;
     std::size_t size() const noexcept;
+    std::size_t node_num() const noexcept ;
     using position_t = std::tuple<float, float>;
     using neuron_t = std::tuple<position_t, float, float>; // position, bias, energy
     using synapse_t = std::tuple<position_t, float>;
