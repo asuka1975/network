@@ -144,3 +144,11 @@ void devnetwork::develop() {
 std::size_t devnetwork::node_num() const noexcept {
     return nodes.size();
 }
+
+const std::vector<devnetwork::neuron_t> &devnetwork::get_nodes() const noexcept {
+    return nodes;
+}
+
+const std::vector<std::tuple<devnetwork::position_t, float, std::uint32_t, std::uint32_t>> &devnetwork::get_conns() const noexcept {
+    return conns;
+}

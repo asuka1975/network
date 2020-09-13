@@ -12,8 +12,8 @@ public:
     explicit devnetwork(const network_config& config);
     void input(const std::vector<float>& inputs);
     [[nodiscard]] const std::vector<float>& get_outputs() const;
-    std::size_t size() const noexcept;
-    std::size_t node_num() const noexcept ;
+    [[nodiscard]] std::size_t size() const noexcept;
+    [[nodiscard]] std::size_t node_num() const noexcept ;
     using position_t = std::tuple<float, float>;
     using neuron_t = std::tuple<position_t, float, float>; // position, bias, energy
     using synapse_t = std::tuple<position_t, float>;
@@ -23,6 +23,8 @@ public:
     std::function<bool(neuron_t, neuron_t, position_t, float)> deleter;
     std::tuple<float, float, float, float, float> hebb;//k(A*oi*oj + B*oi + C*oj + D)
     int neighbors_num;
+    [[nodiscard]] const std::vector<neuron_t>& get_nodes() const noexcept;
+    [[nodiscard]] const std::vector<std::tuple<position_t, float, std::uint32_t, std::uint32_t>>& get_conns() const noexcept ;
 private:
     void develop();
     network_config config;
