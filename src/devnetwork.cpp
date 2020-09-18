@@ -43,6 +43,7 @@ void devnetwork::input(const std::vector<float> &inputs) {
         float o2 = tmp[std::get<3>(c)];
         std::get<1>(c) += std::get<0>(hebb) * (std::get<1>(hebb) * o1 * o2 +
                 std::get<2>(hebb) * o1 + std::get<3>(hebb) * o2 + std::get<4>(hebb));
+        if(std::isinf(std::get<1>(c))) std::get<1>(c) = std::signbit(std::get<1>(c)) ? std::numeric_limits<float>::lowest() : std::numeric_limits<float>::max();
     }
     // update energy
     float a = 1.0f;
