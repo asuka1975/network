@@ -31,19 +31,24 @@ devnetwork::devnetwork(const network_config &config) :
 }
 
 void devnetwork::input(const std::vector<float> &inputs) {
-    std::vector<float> tmp(node_output.size());
+    std::vector<long double> tmp(node_output.size());
     std::copy(inputs.begin(), inputs.end(), node_output.begin());//TODO consider input behavior
+    static auto divergence = [](float x) { return std::isinf(x) ? (std::signbit(x) ? std::numeric_limits<float>::lowest() : std::numeric_limits<float>::max()) : x; };
     for(auto& c : conns) {
-        float o = node_output[std::get<2>(c)] * std::get<1>(c);
+        long double o = static_cast<long double>(node_output[std::get<2>(c)]) * std::get<1>(c);
         tmp[std::get<3>(c)] += o;
     }
+    for(auto& c : conns)
+        std::get<1>(c) = divergence(std::get<1>(c));
     // update weight
     for(auto& c : conns) {
         float o1 = node_output[std::get<2>(c)];
-        float o2 = tmp[std::get<3>(c)];
-        std::get<1>(c) += std::get<0>(hebb) * (std::get<1>(hebb) * o1 * o2 +
-                std::get<2>(hebb) * o1 + std::get<3>(hebb) * o2 + std::get<4>(hebb));
-        if(std::isinf(std::get<1>(c))) std::get<1>(c) = std::signbit(std::get<1>(c)) ? std::numeric_limits<float>::lowest() : std::numeric_limits<float>::max();
+        long double o2 = tmp[std::get<3>(c)];
+        long double a1 = static_cast<long double>(std::get<1>(hebb)) * o1 * o2;
+        long double a2 = static_cast<long double>(std::get<2>(hebb)) * o1;
+        long double a3 = static_cast<long double>(std::get<3>(hebb)) * o2;
+        long double u = static_cast<long double>(std::get<1>(c)) + std::get<0>(hebb) * (a1 + a2 + a3 + std::get<4>(hebb));
+        std::get<1>(c) = divergence(static_cast<float>(std::get<1>(c) + u));
     }
     // update energy
     float a = 1.0f;
@@ -55,7 +60,7 @@ void devnetwork::input(const std::vector<float> &inputs) {
         x += tmp[i];
         std::get<2>(nodes[i]) = 1.0f / (1.0f + std::exp(-a * x));
     }
-    node_output = tmp;
+    for(std::vector<float>::size_type i = 0; i < node_output.size(); i++) node_output[i] = divergence(static_cast<float>(tmp[i]));
     std::copy(node_output.begin() + config.input_num, node_output.begin() + config.input_num + config.output_num, output.begin());
     develop();
 }
