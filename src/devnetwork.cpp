@@ -6,28 +6,32 @@
 #include <random>
 
 devnetwork::devnetwork(const network_config &config) :
-    output(config.output_num), node_output(config.node.size()), nodes(config.node.size()), conns(config.conn.size()), config(config) {
-    std::random_device rnd;
-    std::mt19937 mt(rnd());
-    std::normal_distribution<float> dist(0.0f, 1.0f);// for initialization of position(TODO consider position initialization)
-    for(auto i = 0; i < nodes.size(); i++) {
-        std::get<0>(std::get<0>(nodes[i])) = dist(mt);
-        std::get<1>(std::get<0>(nodes[i])) = dist(mt);
-        std::get<1>(nodes[i]) = std::get<1>(config.node[i]);
-        std::get<2>(nodes[i]) = 0.5f; // sample value
-    }
-    for(auto i = 0; i < conns.size(); i++) {
-        std::get<0>(std::get<0>(conns[i])) = dist(mt);
-        std::get<1>(std::get<0>(conns[i])) = dist(mt);
-        std::get<1>(conns[i]) = std::get<2>(config.conn[i]);
-        std::get<2>(conns[i]) = std::get<0>(config.conn[i]);
-        std::get<3>(conns[i]) = std::get<1>(config.conn[i]);
-    }
+        output(config.output_num), node_output(config.node.size()), nodes(config.node.size()), conns(config.conn.size()), config(config) {
     neighbors_num = 0;
     hebb = std::make_tuple(0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
     auto empty_ret = std::make_tuple(false, std::make_tuple(0.0f, 0.0f), 0.0f);
     creator = [empty_ret](auto, auto) { return std::make_pair(empty_ret, empty_ret); };
     deleter = [](auto, auto, auto, auto) { return false; };
+    position_initializer = []() {
+        static std::random_device rnd;
+        static std::mt19937 mt(rnd());
+        static std::normal_distribution<float> dist(0.0f, 1.0f);
+        return std::make_tuple(dist(mt), dist(mt));
+    };
+}
+
+void devnetwork::initialize() {
+    for(auto i = 0; i < nodes.size(); i++) {
+        std::get<0>(nodes[i]) = position_initializer();
+        std::get<1>(nodes[i]) = std::get<1>(config.node[i]);
+        std::get<2>(nodes[i]) = 0.5f; // sample value
+    }
+    for(auto i = 0; i < conns.size(); i++) {
+        std::get<0>(conns[i]) = std::get<0>(nodes[std::get<1>(config.conn[i])]);
+        std::get<1>(conns[i]) = std::get<2>(config.conn[i]);
+        std::get<2>(conns[i]) = std::get<0>(config.conn[i]);
+        std::get<3>(conns[i]) = std::get<1>(config.conn[i]);
+    }
 }
 
 void devnetwork::input(const std::vector<float> &inputs) {
