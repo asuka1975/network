@@ -10,6 +10,7 @@
 class devnetwork {
 public:
     explicit devnetwork(const network_config& config);
+    void initialize();
     void input(const std::vector<float>& inputs);
     [[nodiscard]] const std::vector<float>& get_outputs() const;
     [[nodiscard]] std::size_t size() const noexcept;
@@ -22,6 +23,7 @@ public:
     std::function<std::pair<neuron_ret_t, synapse_ret_t>(const std::vector<neuron_t>&, synapse_t)> creator;
     std::function<bool(neuron_t, neuron_t, position_t, float)> deleter;
     std::tuple<float, float, float, float, float> hebb;//k(A*oi*oj + B*oi + C*oj + D)
+    std::function<std::tuple<float, float>()> position_initializer;
     int neighbors_num;
     [[nodiscard]] const std::vector<neuron_t>& get_nodes() const noexcept;
     [[nodiscard]] const std::vector<std::tuple<position_t, float, std::uint32_t, std::uint32_t>>& get_conns() const noexcept ;
