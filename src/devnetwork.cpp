@@ -10,8 +10,8 @@ devnetwork::devnetwork(const network_config &config) :
     neighbors_num = 0;
     hebb = std::make_tuple(0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
     auto empty_ret = std::make_tuple(false, std::make_tuple(0.0f, 0.0f), 0.0f);
-    creator = [empty_ret](auto, auto) { return std::make_pair(empty_ret, empty_ret); };
-    deleter = [](auto, auto, auto, auto) { return false; };
+    creator = [empty_ret](auto, auto, auto) { return std::make_pair(empty_ret, empty_ret); };
+    deleter = [](auto, auto, auto, auto, auto) { return false; };
     position_initializer = []() {
         static std::random_device rnd;
         static std::mt19937 mt(rnd());
@@ -62,6 +62,7 @@ void devnetwork::input(const std::vector<float> &inputs) {
     node_output = tmp;
     std::copy(node_output.begin() + config.input_num, node_output.begin() + config.input_num + config.output_num, output.begin());
     develop();
+    counter++;
 }
 
 const std::vector<float> &devnetwork::get_outputs() const {
@@ -76,7 +77,7 @@ void devnetwork::develop() {
     auto c = 0;
     std::vector<std::ptrdiff_t> erases;
     for(auto i = 0; i < conns.size(); i++) {
-        if(deleter(nodes[std::get<2>(conns[i])], nodes[std::get<3>(conns[i])], std::get<0>(conns[i]), std::get<1>(conns[i]))) {
+        if(deleter(nodes[std::get<2>(conns[i])], nodes[std::get<3>(conns[i])], std::get<0>(conns[i]), std::get<1>(conns[i]), counter)) {
             erases.push_back(i);
         }
     }
@@ -116,7 +117,7 @@ void devnetwork::develop() {
             std::get<1>(std::get<0>(s)) /= count;
             std::get<1>(s) /= count;
         }
-        auto [nc, sc] = creator(n, s);
+        auto [nc, sc] = creator(n, s, counter);
 
         if(std::get<0>(nc)) {
             creates_n.emplace_back(std::get<1>(nc), std::get<2>(nc), 0.5f);
