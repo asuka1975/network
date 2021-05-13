@@ -21,8 +21,13 @@ devnetwork::devnetwork(const network_config &config) :
 }
 
 void devnetwork::initialize() {
+    bool use_extra_data = config.extra.has_value();
+    std::vector<std::tuple<float, float>> positions;
+    if(use_extra_data) {
+        positions = std::any_cast<std::vector<std::tuple<float, float>>>(config.extra);
+    }
     for(auto i = 0; i < nodes.size(); i++) {
-        std::get<0>(nodes[i]) = position_initializer();
+        std::get<0>(nodes[i]) = use_extra_data ? positions[i] : position_initializer();
         std::get<1>(nodes[i]) = std::get<1>(config.node[i]);
         std::get<2>(nodes[i]) = 0.5f; // sample value
     }
