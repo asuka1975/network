@@ -8,6 +8,7 @@
 #include <functional>
 #include <memory>
 #include <vector>
+#include <any>
 #include "circuitable.h"
 #include "output.h"
 
@@ -46,6 +47,7 @@ struct network_config {
     std::vector<std::function<float(float)>> f;
     std::vector<std::tuple<std::uint32_t, float>> node;
     std::vector<std::tuple<std::uint32_t, std::uint32_t, float>> conn;
+    std::any extra;
 };
 
 class network {
