@@ -37,4 +37,8 @@ private:
     std::size_t counter = 0;
 };
 
+class placed_devnetwork : private devnetwork {
+    using devnetwork::devnetwork;
+};
+
 #endif //NETWORK_DEVNETWORK_H
