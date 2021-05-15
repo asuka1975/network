@@ -7,6 +7,12 @@
 
 #include "network.h"
 
+struct devnet_extensions {
+    inline static bool enable_evolving_neurocomponents_position = false;
+    inline static bool enable_activation_function = false;
+    inline static bool enable_input_step = false;
+};
+
 class devnetwork {
 public:
     explicit devnetwork(const network_config& config);
