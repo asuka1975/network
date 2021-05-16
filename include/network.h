@@ -50,6 +50,7 @@ struct conn_t {
     std::uint32_t in;
     std::uint32_t out;
     float weight;
+    std::any extra;
 };
 
 struct network_config {
@@ -58,6 +59,7 @@ struct network_config {
     std::vector<std::function<float(float)>> f;
     std::vector<node_t> node;
     std::vector<conn_t> conn;
+    std::any extra;
 };
 
 class network {
