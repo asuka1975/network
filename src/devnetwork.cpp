@@ -10,8 +10,8 @@ devnetwork::devnetwork(const network_config &config) :
     neighbors_num = 0;
     hebb = std::make_tuple(0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
     auto empty_ret = std::make_tuple(false, std::make_tuple(0.0f, 0.0f), 0.0f);
-    creator = [empty_ret](auto, auto) { return std::make_pair(empty_ret, empty_ret); };
-    deleter = [](auto, auto, auto, auto) { return false; };
+    creator = [empty_ret](auto, auto, auto) { return std::make_pair(empty_ret, empty_ret); };
+    deleter = [](auto, auto, auto, auto, auto) { return false; };
     position_initializer = []() {
         static std::random_device rnd;
         static std::mt19937 mt(rnd());
@@ -34,6 +34,7 @@ void devnetwork::initialize() {
         std::get<2>(conns[i]) = config.conn[i].in;
         std::get<3>(conns[i]) = config.conn[i].out;
     }
+    counter = 0;
 }
 
 void devnetwork::input(const std::vector<float> &inputs) {
@@ -78,7 +79,7 @@ void devnetwork::develop() {
     auto c = 0;
     std::vector<std::ptrdiff_t> erases;
     for(auto i = 0; i < conns.size(); i++) {
-        if(deleter(nodes[std::get<2>(conns[i])], nodes[std::get<3>(conns[i])], std::get<0>(conns[i]), std::get<1>(conns[i]))) {
+        if(deleter(nodes[std::get<2>(conns[i])], nodes[std::get<3>(conns[i])], std::get<0>(conns[i]), std::get<1>(conns[i]), counter)) {
             erases.push_back(i);
         }
     }
@@ -118,7 +119,7 @@ void devnetwork::develop() {
             std::get<1>(std::get<0>(s)) /= count;
             std::get<1>(s) /= count;
         }
-        auto [nc, sc] = creator(n, s);
+        auto [nc, sc] = creator(n, s, counter);
 
         if(std::get<0>(nc)) {
             creates_n.emplace_back(std::get<1>(nc), std::get<2>(nc), 0.5f);
@@ -146,6 +147,7 @@ void devnetwork::develop() {
     std::copy(creates_s.begin(), creates_s.end(), std::back_inserter(conns));
 
     node_output.resize(node_output.size() + c);
+    counter++;
 }
 
 std::size_t devnetwork::node_num() const noexcept {
@@ -158,4 +160,12 @@ const std::vector<devnetwork::neuron_t> &devnetwork::get_nodes() const noexcept 
 
 const std::vector<std::tuple<devnetwork::position_t, float, std::uint32_t, std::uint32_t>> &devnetwork::get_conns() const noexcept {
     return conns;
+}
+
+std::size_t devnetwork::num_creator_inputs(int neighbor_num) {
+    return 4 * neighbor_num + 3 + (devnet_extensions::enable_input_step ? 1 : 0);
+}
+
+std::size_t devnetwork::num_deleter_inputs() {
+    return 4 * 2 + 3 + (devnet_extensions::enable_input_step ? 1 : 0);
 }
