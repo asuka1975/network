@@ -13,15 +13,15 @@ feedforward::feedforward(const network_config &config)
 void feedforward::input(const std::vector<float> &inputs) {
     std::fill(node_outputs.begin(), node_outputs.end(), 0);
     std::copy(inputs.begin(), inputs.end(), node_outputs.begin());
-    std::sort(config.conn.begin(), config.conn.end(), [](auto&& p1, auto&& p2) { return std::get<0>(p1) < std::get<0>(p2); });
+    std::sort(config.conn.begin(), config.conn.end(), [](auto&& p1, auto&& p2) { return p1.in < p2.in; });
     for(auto&& c : config.conn) {
-        std::uint32_t fid = std::get<0>(config.node[std::get<0>(c)]);
-        float bias = std::get<1>(config.node[std::get<0>(c)]);
-        node_outputs[std::get<1>(c)] += config.f[fid](node_outputs[std::get<0>(c)] + bias) * std::get<2>(c);
+        std::uint32_t fid = config.node[c.in].fun_id;
+        float bias = config.node[c.in].bias;
+        node_outputs[c.out] += config.f[fid](node_outputs[c.in] + bias) * c.weight;
     }
     for(auto i = 0; i < config.output_num; i++) {
-        std::uint32_t fid = std::get<0>(config.node[i + config.input_num]);
-        float bias = std::get<1>(config.node[i + config.input_num]);
+        std::uint32_t fid = config.node[i + config.input_num].fun_id;
+        float bias = config.node[i + config.input_num].bias;
         outputs[i] = config.f[fid](node_outputs[config.input_num + i] + bias);
     }
 }
