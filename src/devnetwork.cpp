@@ -22,7 +22,9 @@ devnetwork::devnetwork(const network_config &config) :
 
 void devnetwork::initialize() {
     for(auto i = 0; i < nodes.size(); i++) {
-        std::get<0>(nodes[i]) = position_initializer();
+        std::get<0>(nodes[i]) = devnet_extensions::enable_evolving_neurocomponents_position ?
+                std::any_cast<std::tuple<float, float>>(config.node[i].extra) :
+                position_initializer();
         std::get<1>(nodes[i]) = config.node[i].bias;
         std::get<2>(nodes[i]) = 0.5f; // sample value
     }
