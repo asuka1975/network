@@ -44,6 +44,7 @@ namespace deprecated {
 struct node_t {
     std::uint32_t fun_id;
     float bias;
+    std::any extra;
 };
 
 struct conn_t {
@@ -59,7 +60,6 @@ struct network_config {
     std::vector<std::function<float(float)>> f;
     std::vector<node_t> node;
     std::vector<conn_t> conn;
-    std::any extra;
 };
 
 class network {
