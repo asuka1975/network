@@ -23,14 +23,14 @@ devnetwork::devnetwork(const network_config &config) :
 void devnetwork::initialize() {
     for(auto i = 0; i < nodes.size(); i++) {
         std::get<0>(nodes[i]) = position_initializer();
-        std::get<1>(nodes[i]) = std::get<1>(config.node[i]);
+        std::get<1>(nodes[i]) = config.node[i].bias;
         std::get<2>(nodes[i]) = 0.5f; // sample value
     }
     for(auto i = 0; i < conns.size(); i++) {
-        std::get<0>(conns[i]) = std::get<0>(nodes[std::get<1>(config.conn[i])]);
-        std::get<1>(conns[i]) = std::get<2>(config.conn[i]);
-        std::get<2>(conns[i]) = std::get<0>(config.conn[i]);
-        std::get<3>(conns[i]) = std::get<1>(config.conn[i]);
+        std::get<0>(conns[i]) = std::get<0>(nodes[config.conn[i].out]);
+        std::get<1>(conns[i]) = config.conn[i].weight;
+        std::get<2>(conns[i]) = config.conn[i].in;
+        std::get<3>(conns[i]) = config.conn[i].out;
     }
 }
 
