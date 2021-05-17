@@ -21,6 +21,9 @@ devnetwork::devnetwork(const network_config &config) :
 }
 
 void devnetwork::initialize() {
+    if(devnet_extensions::enable_activation_function && config.f.empty()) {
+        throw std::runtime_error("despite enabled activation function, defined activation function is nothing");
+    }
     for(auto i = 0; i < nodes.size(); i++) {
         std::get<0>(nodes[i]) = devnet_extensions::enable_evolving_neurocomponents_position ?
                 std::any_cast<std::tuple<float, float>>(config.node[i].extra) :
