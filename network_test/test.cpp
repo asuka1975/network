@@ -221,22 +221,22 @@ namespace {
         network_config config;
         config.input_num = 2;
         config.output_num = 1;
-        config.node = std::vector<std::tuple<std::uint32_t, float>> {
-            std::make_tuple(0u, 0.5f),
-            std::make_tuple(0u, 0.5f),
-            std::make_tuple(0u, 0.5f),
-            std::make_tuple(0u, 0.5f),
-            std::make_tuple(0u, 0.5f),
-            std::make_tuple(0u, 0.5f),
+        config.node = std::vector<node_t> {
+                { 0u, 0.5f },
+                { 0u, 0.5f },
+                { 0u, 0.5f },
+                { 0u, 0.5f },
+                { 0u, 0.5f },
+                { 0u, 0.5f },
         };
-        config.conn = std::vector<std::tuple<std::uint32_t, std::uint32_t, float>> {
-            std::make_tuple(0u, 1u, 0.5f),
-            std::make_tuple(1u, 2u, 0.5f),
-            std::make_tuple(2u, 3u, 0.5f),
-            std::make_tuple(3u, 4u, 0.5f),
-            std::make_tuple(4u, 5u, 0.5f),
-            std::make_tuple(4u, 2u, 0.5f),
-            std::make_tuple(1u, 4u, 0.5f),
+        config.conn = std::vector<conn_t> {
+                { 0, 1, 0.5f },
+                { 1, 2, 0.5f },
+                { 2, 3, 0.5f },
+                { 3, 4, 0.5f },
+                { 4, 5, 0.5f },
+                { 4, 2, 0.5f },
+                { 1, 4, 0.5f },
         };
         devnetwork n(config);
         for(auto i = 0; i < 100; i++) {

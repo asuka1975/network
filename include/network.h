@@ -8,6 +8,7 @@
 #include <functional>
 #include <memory>
 #include <vector>
+#include <any>
 #include "circuitable.h"
 #include "output.h"
 
@@ -40,12 +41,25 @@ namespace deprecated {
     };
 }
 
+struct node_t {
+    std::uint32_t fun_id;
+    float bias;
+    std::any extra;
+};
+
+struct conn_t {
+    std::uint32_t in;
+    std::uint32_t out;
+    float weight;
+    std::any extra;
+};
+
 struct network_config {
     std::uint32_t input_num;
     std::uint32_t output_num;
     std::vector<std::function<float(float)>> f;
-    std::vector<std::tuple<std::uint32_t, float>> node;
-    std::vector<std::tuple<std::uint32_t, std::uint32_t, float>> conn;
+    std::vector<node_t> node;
+    std::vector<conn_t> conn;
 };
 
 class network {

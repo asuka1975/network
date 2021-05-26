@@ -7,6 +7,12 @@
 
 #include "network.h"
 
+struct devnet_extensions {
+    inline static bool enable_evolving_neurocomponents_position = false;
+    inline static bool enable_activation_function = false;
+    inline static bool enable_input_step = false;
+};
+
 class devnetwork {
 public:
     explicit devnetwork(const network_config& config);
@@ -20,13 +26,15 @@ public:
     using synapse_t = std::tuple<position_t, float>;
     using neuron_ret_t = std::tuple<bool, position_t, float>;
     using synapse_ret_t = std::tuple<bool, position_t, float>;
-    std::function<std::pair<neuron_ret_t, synapse_ret_t>(const std::vector<neuron_t>&, synapse_t)> creator;
-    std::function<bool(neuron_t, neuron_t, position_t, float)> deleter;
+    std::function<std::pair<neuron_ret_t, synapse_ret_t>(const std::vector<neuron_t>&, synapse_t, std::size_t)> creator;
+    std::function<bool(neuron_t, neuron_t, position_t, float, std::size_t)> deleter;
     std::tuple<float, float, float, float, float> hebb;//k(A*oi*oj + B*oi + C*oj + D)
     std::function<std::tuple<float, float>()> position_initializer;
     int neighbors_num;
     [[nodiscard]] const std::vector<neuron_t>& get_nodes() const noexcept;
     [[nodiscard]] const std::vector<std::tuple<position_t, float, std::uint32_t, std::uint32_t>>& get_conns() const noexcept ;
+    static std::size_t num_creator_inputs(int neighbor_num);
+    static std::size_t num_deleter_inputs();
 private:
     void develop();
     network_config config;
@@ -34,6 +42,7 @@ private:
     std::vector<float> node_output;
     std::vector<neuron_t> nodes;
     std::vector<std::tuple<position_t, float, std::uint32_t, std::uint32_t>> conns; // position, weight, in, out
+    std::size_t counter;
 };
 
 #endif //NETWORK_DEVNETWORK_H
